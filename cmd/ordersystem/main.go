@@ -6,8 +6,6 @@ import (
 	"net"
 	"net/http"
 
-	"log"
-
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	_ "github.com/go-sql-driver/mysql"
@@ -23,7 +21,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
@@ -32,7 +29,7 @@ import (
 )
 
 func main() {
-	configs, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -43,22 +40,6 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
-
-	migrationsPath := "file://../../database/migrations"
-
-	// Cria uma nova instância do Migrate
-	m, err := migrate.New(migrationsPath, "mysql://root:root@tcp(localhost:3306)/orders")
-	if err != nil {
-		log.Fatalf("Erro ao criar instância do Migrate: %v", err)
-	}
-
-	// Executa as migrações "up"
-	if err := m.Up(); err != nil {
-		log.Fatalf("Erro ao executar migrações: %v", err)
-	}
-
-	log.Println("Migrações aplicadas com sucesso!")
-
 	rabbitMQChannel := getRabbitMQChannel()
 
 	eventDispatcher := events.NewEventDispatcher()
@@ -99,7 +80,7 @@ func main() {
 }
 
 func getRabbitMQChannel() *amqp.Channel {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
 		panic(err)
 	}

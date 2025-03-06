@@ -14,18 +14,19 @@ type conf struct {
 	GraphQLServerPort string `mapstructure:"GRAPHQL_SERVER_PORT"`
 }
 
-func LoadConfig(path string) (*conf, error) {
+func LoadConfig() (*conf, error) {
 	var cfg *conf
-	viper.SetConfigName("app_config")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
-	err = viper.Unmarshal(&cfg)
+	viper.BindEnv("DB_DRIVER")
+	viper.BindEnv("DB_HOST")
+	viper.BindEnv("DB_PORT")
+	viper.BindEnv("DB_USER")
+	viper.BindEnv("DB_PASSWORD")
+	viper.BindEnv("DB_NAME")
+	viper.BindEnv("WEB_SERVER_PORT")
+	viper.BindEnv("GRPC_SERVER_PORT")
+	viper.BindEnv("GRAPHQL_SERVER_PORT")
+	err := viper.Unmarshal(&cfg)
 	if err != nil {
 		panic(err)
 	}

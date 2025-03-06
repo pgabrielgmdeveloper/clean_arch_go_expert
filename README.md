@@ -4,11 +4,10 @@
 
 Para iniciar o projeto siga os passos:
 
-1. Na raiz do projeto execute o comando `docker compose up --build` e aguarde os `containers` do `mysql` e `rabbitmq` iniciarem;
+1. Na raiz do projeto execute o comando `docker compose up -d` e aguarde os `containers` do `mysql` e `rabbitmq` e `o app order system` iniciarem;
 2. Para acessar o `rabbitmq` acesse: `http://localhost:15672` com `guest` para `username / password`;
 3. Adicione a fila clicando em `Queues and Streams` no campo `name` coloque `orders` e clique em `Add queue`;
 4. Criada a fila acesse ela e em `Bindings` no campo `From exchange` coloque `amq.direct`;
-5. Entre o diretório `cmd/ordersystem` e execute o comando `go run main.go wire_gen.go`;
 
 Com isso o sistema já está pronto para o uso, para testar existe algumas formas:
 
